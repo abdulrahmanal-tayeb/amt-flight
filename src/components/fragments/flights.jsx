@@ -31,8 +31,8 @@ export function SearchOptions({
         defaultValues: values ?? {
             trip: "roundTrip",
             cabinClass: "economy",
-            dep: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-            arr: new Date(Date.now() + 7 * 2 * 24 * 60 * 60 * 1000),
+            startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            endDate: new Date(Date.now() + 7 * 2 * 24 * 60 * 60 * 1000),
             adults: 0
         }
     });

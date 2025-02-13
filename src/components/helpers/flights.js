@@ -6,14 +6,14 @@ export async function getFlights(data, returning = false) {
     const {
         origin,
         destination,
-        dep,
-        arr,
+        startDate,
+        endDate,
         cabinClass,
         adults
     } = data;
 
     const url = new URL("https://sky-scrapper.p.rapidapi.com/api/v1/flights/searchFlights");
-    const [originAirport, destinationAirport, date] = returning? [destination, origin, arr] : [origin, destination, dep];
+    const [originAirport, destinationAirport, date] = returning? [destination, origin, endDate] : [origin, destination, startDate];
     const preparedData = {
         originSkyId: originAirport.skyId,
         destinationSkyId: destinationAirport.skyId,

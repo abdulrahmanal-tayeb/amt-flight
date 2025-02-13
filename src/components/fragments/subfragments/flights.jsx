@@ -147,16 +147,16 @@ export function DateOptions({ control }) {
             >
                 {[
                     {
-                        label: "Departure",
-                        name: "dep",
+                        label: "Start",
+                        name: "startDate",
                         defaultValue: "",
                         sx: {
                             borderLeft: "none"
                         }
                     },
                     {
-                        label: "Arrival",
-                        name: "arr",
+                        label: "End",
+                        name: "endDate",
                         defaultValue: "",
                         sx: {
                             borderRight: "none"
