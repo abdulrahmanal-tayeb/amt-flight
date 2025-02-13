@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet";
-import { DetailedFlight, FlightSearchResults, SearchAndFilter, SearchResult } from "../utils/flights";
+import { DetailedFlight, FlightSearchResults, SearchAndFilter, SearchResult } from "../fragments/flights";
 import { Layout } from "../utils/utils";
-import { Box, Container, Stack } from "@mui/material";
+import { Box, Container, Skeleton, Stack } from "@mui/material";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
@@ -9,6 +9,7 @@ import { Key } from "@mui/icons-material";
 import axios from "axios";
 import { RAPID_API_HEADERS } from "../helpers/constants";
 import { getFlights } from "../helpers/flights";
+import { SearchFlightsSkeleton } from "../loading/flights";
 
 
 export default function SearchFlights() {
@@ -32,40 +33,7 @@ export default function SearchFlights() {
         }
     }, [data]);
 
-    let view = isLoading ? (
-        <h1>Loading...</h1>
-    ) : (
-        <Container
-            sx={{
-                mt: 5
-            }}
-        >
-            {choosen &&
-                <div className="mt-5">
-                    <DetailedFlight
-                        sessionId={data?.sessionId}
-                        onClose={() => setChoosen(null)}
-                        itineraryData={choosen}
-                        flightsQuery={location.state} // Used when querying for returing flights.
-                    />
-                </div>
-            }
 
-            <div
-                style={{
-                    display: !!choosen ? "none" : "block"
-                }}
-            >
-                <h3>Top Departing Flights</h3>
-                <p>Ranked based on price and convenience</p>
-                <FlightSearchResults
-                    flightsQuery={location.state}
-                    setChoosen={setChoosen}
-                    results={searchResults}
-                />
-            </div>
-        </Container >
-    );
 
 
     return (
@@ -78,7 +46,44 @@ export default function SearchFlights() {
                     search={false}
                     values={location.state}
                 />
-                {view}
+                <Container
+                    sx={{
+                        mt: 5
+                    }}
+                >
+                    {isLoading ?
+                        <SearchFlightsSkeleton/>
+                        :
+                        (
+                            <>
+                                {choosen &&
+                                    <div className="mt-5">
+                                        <DetailedFlight
+                                            sessionId={data?.sessionId}
+                                            onClose={() => setChoosen(null)}
+                                            itineraryData={choosen}
+                                            flightsQuery={location.state} // Used when querying for returing flights.
+                                        />
+                                    </div>
+                                }
+
+                                <div
+                                    style={{
+                                        display: !!choosen ? "none" : "block"
+                                    }}
+                                >
+                                    <h3>Top Departing Flights</h3>
+                                    <p>Ranked based on price and convenience</p>
+                                    <FlightSearchResults
+                                        flightsQuery={location.state}
+                                        setChoosen={setChoosen}
+                                        results={searchResults}
+                                    />
+                                </div>
+                            </>
+                        )
+                    }
+                </Container >
             </Layout >
         </>
     );

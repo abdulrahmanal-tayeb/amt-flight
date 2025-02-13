@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Menu, MenuItem, Button, IconButton, Typography } from "@mui/material";
+import { Menu, MenuItem, Button, IconButton, Typography, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import PersonIcon from '@mui/icons-material/Person';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
-export default function OptionsMenu ({
+export default function OptionsMenu({
     onChange
-}){
+}) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [adults, setAdults] = useState(0); // Default: 1 adult
     const open = Boolean(anchorEl);
@@ -14,7 +15,7 @@ export default function OptionsMenu ({
 
     const changeAdultsCount = useCallback((increasing) => {
         setAdults((previous) => {
-            const newValue = Math.max(0, Math.min(previous + (increasing? 1 : -1), 10));
+            const newValue = Math.max(0, Math.min(previous + (increasing ? 1 : -1), 10));
             onChange && onChange(newValue);
             return newValue;
         })
@@ -23,8 +24,11 @@ export default function OptionsMenu ({
     return (
         <div>
             {/* Button to open the menu */}
-            <Button variant="outlined" onClick={(e) => setAnchorEl(e.currentTarget)}>
-                <PersonIcon/>
+            <Button sx={{width: "100%", maxWidth: 150, borderColor: "gray"}} color="inherit" variant="outlined" onClick={(e) => setAnchorEl(e.currentTarget)}>
+                <Stack sx={{flexGrow: 1}} direction="row" justifyContent="space-between">
+                    <PersonIcon />
+                    <ArrowDropDownIcon />
+                </Stack>
             </Button>
 
             {/* Menu Dropdown */}

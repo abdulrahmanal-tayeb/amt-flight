@@ -49,7 +49,14 @@ export default function AirportSelect({
 
     return (
         <Autocomplete
-            sx={{ minWidth: 120, flexGrow: 1, marginLeft: 0 }}
+            sx={{ 
+                minWidth: 120, 
+                flexGrow: 1, 
+                marginLeft: 0 ,
+                "& .MuiAutocomplete-root": {
+                    marginLeft: 0
+                }
+            }}
             options={options ?? []}
             autoHighlight
             value={value}

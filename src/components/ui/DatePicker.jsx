@@ -12,12 +12,15 @@ export default function DatePicker({
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <MuiDatePicker
                 value={dayjs(value)}
+                sx={{maxWidth: 300, minWidth: 120, flexGrow: 1}}
                 label={label}
                 views={['month', 'day']}
                 onChange={onChange}
                 slotProps={{
                     textField: {
-                        sx: { ml: 0 }
+                        sx: {
+                            marginLeft: 0
+                        }
                     }
                 }}
             />

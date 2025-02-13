@@ -19,7 +19,7 @@ export default function Nav() {
     return (
         <>
             {/* Top Navigation Bar */}
-            <AppBar sx={{ backgroundColor: "#1271858f" }} position="static">
+            <AppBar sx={{ backgroundColor: "var(--amt-primary)" }} position="static">
                 <Toolbar>
                     {/* Menu button for small screens */}
                     <IconButton edge="start" color="inherit" onClick={toggleDrawer(true)} sx={{ display: { xs: "block", md: "none" } }}>

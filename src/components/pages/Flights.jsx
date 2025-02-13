@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet";
-import { SearchAndFilter } from "../utils/flights";
+import { SearchAndFilter } from "../fragments/flights";
 import { Box, Button, Chip, Container, Grid2, Stack } from "@mui/material";
 import Card from "../ui/Card";
 import { Layout } from "../utils/utils";
@@ -27,87 +27,46 @@ export default function Flights() {
                     </h1>
                 </div>
                 <SearchAndFilter />
+
                 <Container
-                    className="col-12 mt-5"
+                    className="col-12"
+                    style={{ marginTop: "5em" }}
                 >
-                    <h3>Find cheap flights from Jazan to anywhere</h3>
-                    <Stack className="col-12 mt-3" spacing={2} direction={"row"}>
-                        <Chip label="Jazan" />
-                        <Chip label="Abha" />
-                        <Chip label="Jeddah" />
-                    </Stack>
+                    <h3>Find cheap flights from whereever you are to anywhere</h3>
 
-                    <Stack className="col-12 mt-5" spacing={2} direction={"row"}>
-                        <Card />
-                        <Card />
-                        <Card />
-                        <Card />
-                    </Stack>
-                </Container>
+                    <Stack sx={{
+                        flexWrap: {xs: "wrap", md: "nowrap"},
+                        gap: 2
+                    }} className="col-12 mt-3" direction={"row"}>
+                        {[
+                            {
+                                name: "New York City",
+                                imgSrc: "/assets/images/ny.jpg",
+                                price: "$399",
+                                stops: "1 Stop in Dubai - 1 hr 15 min"
+                            },
+                            {
+                                name: "Paris",
+                                imgSrc: "/assets/images/paris.jpg",
+                                price: "$499",
+                                stops: "1 Stop in Dubai - 2 hr"
+                            },
+                            {
+                                name: "London",
+                                imgSrc: "/assets/images/london.jpg",
+                                price: "$599",
+                                stops: "2 Stops in Dubai, Turkey - 1 hr"
+                            },
+                            {
+                                name: "United Arab Emarites",
+                                imgSrc: "/assets/images/dubai.jpg",
+                                price: "$699",
+                            },
+                        ].map((cardDetails, i) => (
+                            <Card key={i} {...cardDetails} />
+                        ))}
 
-                <Container className="col-12 mt-5 ">
-                    <h3>Flight information for Jazan to Paris to help you plan your next trip.</h3>
-                    <Grid2 container spacing={2} sx={{ mt: 5, flexWrap: "wrap" }}>
-                        <Grid2 size={6} item>
-                            <Box
-                                sx={{
-                                    borderRadius: '1em',
-                                    backgroundColor: 'var(--amt-secondary)',
-                                    p: 2,
-                                    position: 'relative',
-                                    height: '100%',
-                                }}
-                            >
-                                <p>Cheapest One-Way Flight</p>
-                                <p style={{ fontSize: '2em' }}>$399</p>
-                                <p>Saudia - 1 stop - 12 hr - Feb 26</p>
-                                <Box
-                                    sx={{
-                                        position: 'absolute',
-                                        bottom: '1em',
-                                        width: '100%',
-                                    }}
-                                >
-                                    <p>The cheapest one-way flight from Jazan to Paris is currently $394</p>
-                                    <Button variant="contained" color="secondary">
-                                        Find Flights
-                                    </Button>
-                                </Box>
-                            </Box>
-                        </Grid2>
-                        <Grid2 item size={6}>
-                            <Stack spacing={2}>
-                                <Box
-                                    sx={{
-                                        borderRadius: '1em',
-                                        backgroundColor: 'var(--amt-secondary)',
-                                        p: 2,
-                                        position: 'relative'
-                                    }}
-                                >
-                                    <p>Fastest Flight</p>
-                                    <Stack sx={{ justifyContent: "space-between" }} direction="row" spacing={2}>
-                                        <p style={{ fontSize: '2em' }}>9 hr 30 min</p>
-                                        <p>The fastest flight with stops from Jazan to Paris takes 9 hr 30 min</p>
-                                    </Stack>
-                                </Box>
-                                <Box
-                                    sx={{
-                                        borderRadius: '1em',
-                                        backgroundColor: 'var(--amt-secondary)',
-                                        p: 2,
-                                        position: 'relative'
-                                    }}
-                                >
-                                    <p>Another Flight Info</p>
-                                    <Stack sx={{ justifyContent: "space-between" }} direction="row" spacing={2}>
-                                        <p style={{ fontSize: '2em' }}>$450</p>
-                                        <p>Airline XYZ - Nonstop - 11 hr - Mar 3</p>
-                                    </Stack>
-                                </Box>
-                            </Stack>
-                        </Grid2>
-                    </Grid2>
+                    </Stack>
                 </Container>
             </Layout>
         </>

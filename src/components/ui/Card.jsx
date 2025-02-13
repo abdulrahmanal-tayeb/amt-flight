@@ -1,27 +1,36 @@
-export default function Card() {
+export default function Card({
+    name,
+    imgSrc,
+    price,
+    stops
+}) {
     return (
         <div style={{
-            flexGrow: 1, maxWidth: "300px",
+            flexGrow: 1,
             backgroundColor: "var(--amt-secondary)",
             borderRadius: "1em"
 
         }}>
-            <div style={{
-                backgroundColor: "black",
-                borderRadius: "1em",
-                height: "100px",
-                width: "100%",
-            }} />
-            <div className="mt-3" style={{padding: "1em"}}>
-                <div className="amt-flex" style={{ justifyContent: "space-between" }}>
-                    <p>London</p>
-                    <p>$539</p>
-                </div>
-                <div className="mt-3">
-                    <p>Mar 9 - Aug 10</p>
-                </div>
-                <div className="mt-3">
-                    <p>1 stop15 hr 5 min</p>
+            <img
+                src={imgSrc}
+                style={{
+                    backgroundColor: "black",
+                    borderRadius: "1em",
+                    borderBottomLeftRadius: 0,
+                    borderBottomRightRadius: 0,
+                    height: "150px",
+                    width: "100%",
+                }}
+            />
+            <div className="mt-3" style={{ padding: "1em", display: "flex", alignItems: "flex-end" }}>
+                <div>
+                    <div className="amt-flex" style={{ justifyContent: "space-between" }}>
+                        <p>{name}</p>
+                    </div>
+                    <div className="mt-3">
+                        <p style={{fontSize: "2em"}}>{price}</p>
+                        <p className="text-muted">{stops ?? "No stops"}</p>
+                    </div>
                 </div>
             </div>
         </div>

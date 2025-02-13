@@ -4,7 +4,7 @@ import CircleIcon from '@mui/icons-material/Circle';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import Select from "../ui/Select";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, IconButton, Stack, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, IconButton, Skeleton, Stack, Typography } from "@mui/material";
 import AirportSelect from "../ui/Autocomplete";
 import DatePicker from "../ui/DatePicker";
 import SearchIcon from '@mui/icons-material/Search';
@@ -14,10 +14,12 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { Paginated } from './utils';
+import { Paginated } from '../utils/utils';
 import { toSentence, formatDuration, formatLegs, formatShortDate, formatTime, objectToSearchParams } from '../helpers/helpers';
 import { getFlightDetails, getFlights, getItinerary } from '../helpers/flights';
 import OptionsMenu from '../ui/OptionsMenu';
+import { AirportOptions, DateOptions, TripOptions } from './subfragments/flights';
+import { SearchFlightsSkeleton } from '../loading/flights';
 
 
 export function SearchAndFilter({
@@ -36,20 +38,6 @@ export function SearchAndFilter({
     });
 
     const navigate = useNavigate();
-
-    // Rapid API doesn't support this option, so it will be used as is in every result.
-    const roundTripOptions = useMemo(() => ([
-        { label: "Round Trip", value: "roundTrip" },
-        { label: "One Way", value: "oneWay" },
-        { label: "Multi City", value: "multiCity" },
-    ]), []);
-
-    const classOptions = useMemo(() => ([
-        { label: "Economy", value: "economy" },
-        { label: "Premium Economy", value: "premium_economy" },
-        { label: "Business", value: "business" },
-        { label: "First", value: "first" },
-    ]), []);
 
 
     const handleSearch = useCallback((values) => {
@@ -73,134 +61,18 @@ export function SearchAndFilter({
                         position: "relative",
                     }}
                 >
-
-                    {/* Trip Options */}
-                    <Stack
-                        className="col-12"
-                        direction="row"
-                        spacing={1}
-                        sx={{
-                            flexWrap: "wrap",
-                            gap: 2
-                        }}
-                    >
-                        {[
-                            {
-                                label: "Round Trip",
-                                options: roundTripOptions,
-                                name: "trip",
-                                defaultValue: "r"
-                            },
-                            {
-                                label: "Cabin Class",
-                                options: classOptions,
-                                name: "cabinClass",
-                                defaultValue: 1
-                            }
-                        ].map((selectProps, i) => (
-                            <Controller
-                                key={i}
-                                name={selectProps.name}
-                                control={control}
-                                render={({ field, fieldState }) => (
-                                    <>
-                                        <Select
-                                            {...field}
-                                            value={field.value}
-                                            error={fieldState.error}
-                                            {...selectProps}
-                                            onChange={(value) => field.onChange(value)}
-                                        />
-                                    </>
-                                )}
-                            />
-                        ))}
-                        <Controller
-                            name={"adults"}
-                            control={control}
-                            render={({ field, fieldState }) => (
-                                <>
-                                    <OptionsMenu
-                                        onChange={(adults) => field.onChange(adults)}
-                                    />
-                                </>
-                            )}
-                        />
-                    </Stack>
-
+                    <TripOptions control={control} />
                     <Stack
                         className="col-12 mt-3 amt-flex-grow"
                         direction={"row"}
-                        spacing={2}
+                        justifyContent={"space-between"}
                         sx={{
                             flexWrap: "wrap",
                             gap: 2
                         }}
                     >
-                        {/* Airports Details */}
-                        <Stack alignItems={"center"} divider={<NavigateNextIcon/>} direction="row" spacing={2}>
-                            {[
-                                {
-                                    label: "From",
-                                    src: "",
-                                    name: "origin",
-                                    defaultValue: ""
-                                },
-                                {
-                                    label: "To",
-                                    src: "",
-                                    name: "destination",
-                                    defaultValue: ""
-                                }
-                            ].map((autoCompleteProps, i) => (
-                                <Controller
-                                    key={i}
-                                    name={autoCompleteProps.name}
-                                    control={control}
-                                    render={({ field, fieldState }, i) => (
-                                        <>
-                                            <AirportSelect
-                                                {...autoCompleteProps}
-                                                value={field.value}
-                                                onSelect={(value) => field.onChange(value)}
-                                            />
-                                        </>
-                                    )}
-                                />
-                            ))}
-                        </Stack>
-
-                        {/* Date and Time */}
-                        <Stack direction="row" spacing={2}>
-                            {[
-                                {
-                                    label: "Departure",
-                                    name: "dep",
-                                    defaultValue: ""
-                                },
-                                {
-                                    label: "Arrival",
-                                    name: "arr",
-                                    defaultValue: ""
-                                }
-                            ].map((dateProps, i) => (
-                                <Controller
-                                    key={i}
-                                    name={dateProps.name}
-                                    control={control}
-                                    render={({ field, fieldState }) => (
-                                        <>
-                                            <DatePicker
-                                                {...field}
-                                                {...dateProps}
-                                                value={field.value}
-                                                onChange={(value) => field.onChange(value.toDate())}
-                                            />
-                                        </>
-                                    )}
-                                />
-                            ))}
-                        </Stack>
+                        <AirportOptions control={control} />
+                        <DateOptions control={control} />
                     </Stack>
 
                     {/* Search Button */}
@@ -213,7 +85,7 @@ export function SearchAndFilter({
                             variant="contained"
                             sx={{
                                 borderRadius: "2em",
-                                bgColor: "blue",
+                                backgroundColor: "#127185",
                                 transform: "translateY(2.5em)",
                                 height: "45px"
                             }}
@@ -371,15 +243,24 @@ export function DetailedFlight({
         queryFn: () => getFlights(flightsQuery, true),
     });
 
-
-    useEffect(() => {
-        console.log("RE: ", returningFlights);
-    }, [returningFlights]);
-
     if (isLoading) {
-        return <h1>Loading...</h1>
+        return (
+            <Skeleton
+                sx={{
+                    width: "100%",
+                    height: "200px",
+                    borderRadius: "1em",
+                    margin: 0, // Ensure no extra spacing
+                    display: "block", // Remove any inline element spacing
+                }}
+            />
+        )
     } else if (error || !data?.data.itinerary) {
-        return <h1>Something went wrong :(</h1>
+        return (
+            <div>
+                <h1>Ooops! Something went wrong</h1>
+            </div>
+        );
     }
 
     const firstLeg = data?.data.itinerary.legs[0];
@@ -479,29 +360,36 @@ export function DetailedFlight({
                     </Accordion>
                 </Stack>
             </div>
-            <div className="mt-5">
-                <h3>Returning Flights</h3>
 
-                <div className='mt-3'>
-                    {returningFlights?.data?.itineraries &&
-                        <Stack direction="column" spacing={2}>
-                            <Paginated
-                                itemsPerPage={5}
-                                items={returningFlights.data.itineraries}
-                                render={(result, i) => (
-                                    <SearchResult
-                                        trip={flightsQuery.trip}
-                                        key={i}
-                                        data={result}
-                                        cabinClass={flightsQuery.cabinClass}
-                                        onClick={() => { }}
-                                    />
-                                )}
-                            />
-                        </Stack>
-                    }
+            {isLoadingReturningFlights ?
+                <div className='mt-5'>
+                    <SearchFlightsSkeleton />
                 </div>
-            </div>
+                :
+                <div className="mt-5">
+                    <h3>Returning Flights</h3>
+
+                    <div className='mt-3'>
+                        {returningFlights?.data?.itineraries &&
+                            <Stack direction="column" spacing={2}>
+                                <Paginated
+                                    itemsPerPage={5}
+                                    items={returningFlights.data.itineraries}
+                                    render={(result, i) => (
+                                        <SearchResult
+                                            trip={flightsQuery.trip}
+                                            key={i}
+                                            data={result}
+                                            cabinClass={flightsQuery.cabinClass}
+                                            onClick={() => { }}
+                                        />
+                                    )}
+                                />
+                            </Stack>
+                        }
+                    </div>
+                </div>
+            }
         </>
     )
 }
