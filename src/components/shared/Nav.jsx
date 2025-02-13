@@ -13,7 +13,7 @@ export default function Nav() {
 
     const menuItems = [
         ["Home", "/"],
-        ["Flights", "/flights/"]
+        ["Google Flights", "https://www.google.com/travel/flights"],
     ];
 
     return (
@@ -28,7 +28,7 @@ export default function Nav() {
 
                     {/* Logo or Title */}
                     <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                        Amt Flight
+                        AmtFlight
                     </Typography>
 
                     {/* Desktop Menu Items */}
@@ -46,7 +46,14 @@ export default function Nav() {
 
             {/* Drawer (Sidebar) for Small Screens */}
             <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
-                <List sx={{ width: 250 }}>
+                <List sx={{
+                    width: 250,
+                    backgroundColor: "var(--amt-primary)",
+                    height: "100%"
+                }}>
+                    <div className="p-3">
+                        <h3 style={{color: "white"}}>AmtFlight</h3>
+                    </div>
                     {menuItems.map(([key, value]) => (
                         <ListItem button key={key} onClick={toggleDrawer(false)}>
                             <Link className="nav-link" to={value} color="inherit">

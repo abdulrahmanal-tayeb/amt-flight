@@ -125,12 +125,13 @@ export function SearchResult({
     return (
         <Box
             onClick={() => onClick && onClick(data)}
-            className="result-container"
+            className="result-container mb-3"
             sx={{
                 width: "100%",
                 padding: "1em",
                 backgroundColor: "var(--amt-secondary)",
                 borderRadius: "1em",
+                cursor: onClick? "pointer" : "auto",
                 ...style
             }}
         >
@@ -354,10 +355,10 @@ export function DetailedFlight({
                                     <div className="mt-3">
                                         {Object.entries(data.data.itinerary.operatingCarrierSafetyAttributes[0]).map(([key, value], i) => {
                                             if (value === null) {
-                                                value = "-";
+                                                value = <span style={{color: "red"}}>No</span>;
                                             }
 
-                                            return <p>
+                                            return <p key={i}>
                                                 <strong>{toSentence(key)}</strong> : <span>{value}</span>
                                             </p>
                                         })}
