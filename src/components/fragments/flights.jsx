@@ -1,29 +1,26 @@
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
 import CircleIcon from '@mui/icons-material/Circle';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import Select from "../ui/Select";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, IconButton, Skeleton, Stack, Typography } from "@mui/material";
-import AirportSelect from "../ui/Autocomplete";
-import DatePicker from "../ui/DatePicker";
 import SearchIcon from '@mui/icons-material/Search';
 import { FlightTakeoff } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Paginated } from '../utils/utils';
 import { toSentence, formatDuration, formatLegs, formatShortDate, formatTime, objectToSearchParams } from '../helpers/helpers';
 import { getFlightDetails, getFlights, getItinerary } from '../helpers/flights';
 import { AirportOptions, DateOptions, TripOptions } from './subfragments/flights';
 import { SearchFlightsSkeleton } from '../loading/flights';
-
+import {motion} from "framer-motion";
+import Slide from '../ui/animated/Slide';
 
 export function SearchOptions({
     values,
-    style={},
+    style = {},
     search = true
 }) {
 
@@ -49,7 +46,13 @@ export function SearchOptions({
 
     return (
         <Container>
-            <form>
+            <motion.form
+                initial={{opacity: 0, y: -50}}
+                animate={{opacity: 1, y: 0}}
+                transition={{
+                    duration: 1
+                }}
+            >
                 <Box
                     className="shadow"
                     sx={{
@@ -96,7 +99,7 @@ export function SearchOptions({
                         </Button>
                     </Container>}
                 </Box>
-            </form>
+            </motion.form>
         </Container>
     )
 }
@@ -117,7 +120,6 @@ export function SearchResult({
         tags
     } = data;
 
-    console.log("TAGS: ", tags);
     const firstLeg = legs[0];
 
     return (
@@ -206,13 +208,19 @@ export function FlightSearchResults({
                 itemsPerPage={5}
                 items={itineraries}
                 render={(result, i) => (
-                    <SearchResult
-                        onClick={handleClick}
-                        key={i}
-                        data={result}
-                        cabinClass={flightsQuery.cabinClass}
-                        trip={flightsQuery.trip}
-                    />
+                    <Slide
+                        transition={{
+                            delay: i * 0.3
+                        }}
+                    >
+                        <SearchResult
+                            onClick={handleClick}
+                            key={i}
+                            data={result}
+                            cabinClass={flightsQuery.cabinClass}
+                            trip={flightsQuery.trip}
+                        />
+                    </Slide>
                 )}
             />
         </Stack>

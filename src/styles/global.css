@@ -12,10 +12,6 @@
 }
 
 
-.background-container {
-    background-color: var(--amt-primary);
-}
-
 html, body {
     width: 100vw;
     height: auto;
