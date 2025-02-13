@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet";
-import { DetailedFlight, FlightSearchResults, SearchAndFilter, SearchResult } from "../fragments/flights";
+import { DetailedFlight, FlightSearchResults, SearchOptions, SearchResult } from "../fragments/flights";
 import { Layout } from "../utils/utils";
 import { Box, Container, Skeleton, Stack } from "@mui/material";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -42,7 +42,7 @@ export default function SearchFlights() {
                 <title>Search for flights</title>
             </Helmet>
             <Layout style={{ marginTop: "2em" }}>
-                <SearchAndFilter
+                <SearchOptions
                     search={false}
                     values={location.state}
                 />

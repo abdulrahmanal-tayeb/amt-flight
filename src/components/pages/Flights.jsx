@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet";
-import { SearchAndFilter } from "../fragments/flights";
+import { SearchOptions } from "../fragments/flights";
 import { Box, Button, Chip, Container, Grid2, Stack } from "@mui/material";
 import Card from "../ui/Card";
 import { Layout } from "../utils/utils";
@@ -13,20 +13,29 @@ export default function Flights() {
 
             <Layout>
                 <div
-                    className="amt-flex amt-flex-center amt-flex-align-center"
+                    className="background-container amt-flex amt-flex-center amt-flex-align-center mt-5"
                     style={{
                         width: "100%",
                         height: "25dvh",
-                        position: "relative"
+                        position: "relative",
+                        marginBottom: "-3em",
+                        borderRadius: "0.8em"
                     }}
                 >
                     <h1
-                        style={{ fontSize: "3em" }}
+                        style={{
+                            fontSize: "clamp(3em, 3vw, 4em)",
+                            color: "white"
+                        }}
                     >
                         Flights
                     </h1>
                 </div>
-                <SearchAndFilter />
+                <SearchOptions
+                    style={{
+                        backgroundColor: "white"
+                    }}
+                />
 
                 <Container
                     className="col-12"
@@ -35,7 +44,7 @@ export default function Flights() {
                     <h3>Find cheap flights from whereever you are to anywhere</h3>
 
                     <Stack sx={{
-                        flexWrap: {xs: "wrap", md: "nowrap"},
+                        flexWrap: { xs: "wrap", md: "nowrap" },
                         gap: 2
                     }} className="col-12 mt-3" direction={"row"}>
                         {[

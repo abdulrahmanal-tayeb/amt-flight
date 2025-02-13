@@ -17,13 +17,13 @@ import { useNavigate } from 'react-router-dom';
 import { Paginated } from '../utils/utils';
 import { toSentence, formatDuration, formatLegs, formatShortDate, formatTime, objectToSearchParams } from '../helpers/helpers';
 import { getFlightDetails, getFlights, getItinerary } from '../helpers/flights';
-import OptionsMenu from '../ui/OptionsMenu';
 import { AirportOptions, DateOptions, TripOptions } from './subfragments/flights';
 import { SearchFlightsSkeleton } from '../loading/flights';
 
 
-export function SearchAndFilter({
+export function SearchOptions({
     values,
+    style={},
     search = true
 }) {
 
@@ -59,6 +59,7 @@ export function SearchAndFilter({
                         padding: "1em",
                         backgroundColor: "var(--amt-secondary)",
                         position: "relative",
+                        ...style,
                     }}
                 >
                     <TripOptions control={control} />
