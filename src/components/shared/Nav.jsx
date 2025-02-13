@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, ListItem, ListItemText, Container, Stack } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
@@ -6,15 +6,14 @@ import { Link } from "react-router-dom";
 export default function Nav() {
     const [open, setOpen] = useState(false);
 
-    const toggleDrawer = (state) => () => {
+    const toggleDrawer = useCallback((state) => () => {
         setOpen(state);
-    };
+    }, []);
 
-
-    const menuItems = [
+    const menuItems = useMemo(() => ([
         ["Home", "/"],
         ["Google Flights", "https://www.google.com/travel/flights"],
-    ];
+    ]), []);
 
     return (
         <>

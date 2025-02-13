@@ -31,7 +31,6 @@ export function Paginated({
         const newOffset = (page * itemsPerPage) % items.length;
         setItemOffset(newOffset);
     };
-
     return (
         <>
             {currentItems.map(render)}
@@ -45,6 +44,6 @@ export function Paginated({
                 />
             </div>
         </>
-    );
+    )
 }
 

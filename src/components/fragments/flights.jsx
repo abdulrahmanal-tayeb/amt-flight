@@ -15,7 +15,7 @@ import { toSentence, formatDuration, formatLegs, formatShortDate, formatTime, ob
 import { getFlightDetails, getFlights, getItinerary } from '../helpers/flights';
 import { AirportOptions, DateOptions, TripOptions } from './subfragments/flights';
 import { SearchFlightsSkeleton } from '../loading/flights';
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
 import Slide from '../ui/animated/Slide';
 
 export function SearchOptions({
@@ -46,13 +46,7 @@ export function SearchOptions({
 
     return (
         <Container>
-            <motion.form
-                initial={{opacity: 0, y: -50}}
-                animate={{opacity: 1, y: 0}}
-                transition={{
-                    duration: 1
-                }}
-            >
+            <form>
                 <Box
                     className="shadow"
                     sx={{
@@ -99,7 +93,7 @@ export function SearchOptions({
                         </Button>
                     </Container>}
                 </Box>
-            </motion.form>
+            </form>
         </Container>
     )
 }
@@ -131,7 +125,7 @@ export function SearchResult({
                 padding: "1em",
                 backgroundColor: "var(--amt-secondary)",
                 borderRadius: "1em",
-                cursor: onClick? "pointer" : "auto",
+                cursor: onClick ? "pointer" : "auto",
                 ...style
             }}
         >
@@ -203,30 +197,37 @@ export function FlightSearchResults({
         }
     }, []);
 
-    return itineraries ? (
-        <Stack direction="column" spacing={2}>
-            <Paginated
-                itemsPerPage={5}
-                items={itineraries}
-                render={(result, i) => (
-                    <Slide
-                        transition={{
-                            delay: i * 0.3
-                        }}
-                    >
-                        <SearchResult
-                            onClick={handleClick}
-                            key={i}
-                            data={result}
-                            cabinClass={flightsQuery.cabinClass}
-                            trip={flightsQuery.trip}
-                        />
-                    </Slide>
-                )}
-            />
-        </Stack>
+    return itineraries?.length > 0 ? (
+        <>
+            <h3>Top Departing Flights</h3>
+            <p>Ranked based on price and convenience</p>
+            <Stack direction="column" spacing={2}>
+                <Paginated
+                    itemsPerPage={5}
+                    items={itineraries}
+                    render={(result, i) => (
+                        <Slide
+                            transition={{
+                                delay: i * 0.3
+                            }}
+                        >
+                            <SearchResult
+                                onClick={handleClick}
+                                key={i}
+                                data={result}
+                                cabinClass={flightsQuery.cabinClass}
+                                trip={flightsQuery.trip}
+                            />
+                        </Slide>
+                    )}
+                />
+            </Stack>
+        </>
     ) : (
-        <h1>No Results</h1>
+        <div>
+            <h3>No Results</h3>
+            <p>We couldn't find any flight with your current search options.</p>
+        </div>
     );
 }
 
@@ -355,7 +356,7 @@ export function DetailedFlight({
                                     <div className="mt-3">
                                         {Object.entries(data.data.itinerary.operatingCarrierSafetyAttributes[0]).map(([key, value], i) => {
                                             if (value === null) {
-                                                value = <span style={{color: "red"}}>No</span>;
+                                                value = <span style={{ color: "red" }}>No</span>;
                                             }
 
                                             return <p key={i}>

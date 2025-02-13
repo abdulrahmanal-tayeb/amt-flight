@@ -72,8 +72,6 @@ export default function SearchFlights() {
                                         display: !!choosen ? "none" : "block"
                                     }}
                                 >
-                                    <h3>Top Departing Flights</h3>
-                                    <p>Ranked based on price and convenience</p>
                                     <FlightSearchResults
                                         flightsQuery={location.state}
                                         setChoosen={setChoosen}

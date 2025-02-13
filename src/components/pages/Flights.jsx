@@ -50,11 +50,19 @@ export default function Flights() {
                         Flights
                     </motion.h1>
                 </motion.div>
-                <SearchOptions
-                    style={{
-                        backgroundColor: "white"
+                <Slide
+                    transition={{
+                        duration: 1
                     }}
-                />
+                    direction="down"
+                    className="col-12"
+                >
+                    <SearchOptions
+                        style={{
+                            backgroundColor: "white"
+                        }}
+                    />
+                </Slide>
 
                 <Slide
                     className="col-12"
@@ -99,7 +107,7 @@ export default function Flights() {
                                 },
                             ].map((cardDetails, i) => (
                                 <Slide
-                                    style={{flexGrow: 1}}
+                                    style={{ flexGrow: 1 }}
                                     transition={{
                                         duration: 0.2,
                                         delay: 1 + i * 0.2
