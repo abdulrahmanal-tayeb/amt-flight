@@ -1,0 +1,57 @@
+:root {
+    --amt-secondary : #0000000a;
+}
+
+html, body {
+    width: 100vw;
+    height: auto;
+    overflow-x: hidden;
+}
+
+.amt-flex {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.amt-flex-center {
+    justify-content: center;
+}
+
+.amt-flex-grow>* {
+    flex-grow: 1;
+}
+
+.amt-flex-align-center {
+    align-items: center;
+}
+
+.amt-flex-direction-col {
+    flex-direction: column;
+}
+
+.amt-container {
+    width: 70dvw;
+}
+
+.amt-base-container {
+    width: 100vw;
+    height: auto;
+}
+
+@media (max-width: 500px){
+    .amt-container {
+        width: 100dvw;
+    }
+}
+
+@media (max-width: 367px){
+    .result-container {
+        font-size: 0.7em;
+    }
+}
+
+.nav-link {
+    text-decoration: none;
+    color: white;
+}
