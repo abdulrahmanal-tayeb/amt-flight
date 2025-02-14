@@ -50,7 +50,10 @@ export function TripOptions({ control }) {
                         label: "Round Trip",
                         options: roundTripOptions,
                         name: "trip",
-                        defaultValue: "r"
+                        defaultValue: "r",
+                        rules: {
+                            required: "Round Trip is required"
+                        }
                     },
                     {
                         name: "adults",
@@ -62,6 +65,9 @@ export function TripOptions({ control }) {
                     },
                     {
                         label: "Cabin Class",
+                        rules: {
+                            required: "Cabin class is required"
+                        },
                         options: classOptions,
                         name: "cabinClass",
                         defaultValue: 1
@@ -71,6 +77,7 @@ export function TripOptions({ control }) {
                     <Controller
                         key={i}
                         name={selectProps.name}
+                        rules={selectProps.rules}
                         control={control}
                         render={selectProps.render ?? (({ field, fieldState }) => (
                             <Select
@@ -106,12 +113,18 @@ export function AirportOptions({ control }) {
                     {
                         label: "From",
                         src: "",
+                        rules: {
+                            required: "Origin is required"
+                        },
                         name: "origin",
                         defaultValue: ""
                     },
                     {
                         label: "To",
                         src: "",
+                        rules: {
+                            required: "Destination is required"
+                        },
                         name: "destination",
                         defaultValue: ""
                     }
@@ -119,15 +132,15 @@ export function AirportOptions({ control }) {
                     <Controller
                         key={i}
                         name={autoCompleteProps.name}
+                        rules={autoCompleteProps.rules}
                         control={control}
                         render={({ field, fieldState }, i) => (
-                            <>
-                                <AirportSelect
-                                    {...autoCompleteProps}
-                                    value={field.value}
-                                    onSelect={(value) => field.onChange(value)}
-                                />
-                            </>
+                            <AirportSelect
+                                {...autoCompleteProps}
+                                value={field.value}
+                                error={fieldState.error}
+                                onSelect={(value) => field.onChange(value)}
+                            />
                         )}
                     />
                 ))}
@@ -154,6 +167,9 @@ export function DateOptions({ control }) {
                     {
                         label: "Start",
                         name: "startDate",
+                        rules: {
+                            required: "Start date is required"
+                        },
                         defaultValue: "",
                         sx: {
                             borderLeft: "none"
@@ -162,6 +178,9 @@ export function DateOptions({ control }) {
                     {
                         label: "End",
                         name: "endDate",
+                        rules: {
+                            required: "End date is required"
+                        },
                         defaultValue: "",
                         sx: {
                             borderRight: "none"
@@ -170,12 +189,14 @@ export function DateOptions({ control }) {
                 ].map((dateProps, i) => (
                     <Controller
                         key={i}
+                        rules={dateProps.rules}
                         name={dateProps.name}
                         control={control}
-                        render={({ field }) => (
+                        render={({ field, fieldState }) => (
                             <DatePicker
                                 {...dateProps}
                                 value={field.value}
+                                error={fieldState.error}
                                 onChange={(value) => field.onChange(value.toDate())}
                             />
                         )}

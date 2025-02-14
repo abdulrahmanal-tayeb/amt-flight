@@ -9,7 +9,6 @@ export default function Card({
             flexGrow: 1,
             backgroundColor: "var(--amt-secondary)",
             borderRadius: "1em"
-
         }}>
             <img
                 alt={name}

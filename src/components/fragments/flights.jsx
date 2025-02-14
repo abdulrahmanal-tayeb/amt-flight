@@ -255,7 +255,7 @@ export function DetailedFlight({
             <Helmet>
                 <title>Flight Details</title>
             </Helmet>
-            
+
             <div
                 style={{
                     backgroundColor: "var(--amt-secondary)",

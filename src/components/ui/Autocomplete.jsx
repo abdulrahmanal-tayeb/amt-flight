@@ -1,11 +1,14 @@
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import { useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { debounce } from 'lodash-es';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { RAPID_API_HEADERS } from '../helpers/constants';
+import { FormControl } from '@mui/material';
+
+const FieldError = lazy(() => import("./FieldError"))
 
 async function getAirportDetails(term) {
     const response = await axios.get(
@@ -21,7 +24,8 @@ export default function AirportSelect({
     initialOptions = [],
     label,
     value,
-    onSelect
+    onSelect,
+    error
 }) {
     const [options, setOptions] = useState(initialOptions);
     const [term, setTerm] = useState("");
@@ -48,50 +52,57 @@ export default function AirportSelect({
     }, [data]);
 
     return (
-        <Autocomplete
-            sx={{ 
-                minWidth: 120, 
-                flexGrow: 1, 
-                marginLeft: 0 ,
-                "& .MuiAutocomplete-root": {
-                    marginLeft: 0
-                }
+        <FormControl
+            sx={{
+                minWidth: 120,
+                flexGrow: 1,
             }}
-            options={options ?? []}
-            autoHighlight
-            value={value ?? null}
-            loading={isLoading}
-            loadingText={"Fetching Airports..."}
-            onChange={(e, value) => (onSelect && onSelect(value))}
-            onInputChange={(event) => event?.target.value && handleSearch(event.target.value)}
-            getOptionLabel={getOptionLabel}
-            renderOption={(props, option) => {
-                if (!option) return;
-                const { key, ...optionProps } = props;
-                return (
-                    <Box
-                        key={key}
-                        component="li"
-                        sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
-                        {...optionProps}
-                    >
-                        {getOptionLabel(option)}
-                    </Box>
-                );
-            }}
-            renderInput={(params) => (
-                <TextField
-                    {...params}
-                    label={label}
-                    slotProps={{
-                        htmlInput: {
-                            ...params.inputProps,
-                            autoComplete: 'new-password', // disable autocomplete and autofill
-                        },
-                    }}
-                />
-            )}
-        />
+            error={!!error}
+        >
+            <Autocomplete
+                options={options ?? []}
+                autoHighlight
+                value={value ?? null}
+                loading={isLoading}
+                loadingText={"Fetching Airports..."}
+                onChange={(e, value) => (onSelect && onSelect(value))}
+                onInputChange={(event) => event?.target.value && handleSearch(event.target.value)}
+                getOptionLabel={getOptionLabel}
+                renderOption={(props, option) => {
+                    if (!option) return;
+                    const { key, ...optionProps } = props;
+                    return (
+                        <Box
+                            key={key}
+                            component="li"
+                            sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                            {...optionProps}
+                        >
+                            {getOptionLabel(option)}
+                        </Box>
+                    );
+                }}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label={label}
+                        slotProps={{
+                            htmlInput: {
+                                ...params.inputProps,
+                                autoComplete: 'new-password', // disable autocomplete and autofill
+                            },
+                        }}
+                    />
+                )}
+            />
+            {error &&
+                <Suspense>
+                    <FieldError>
+                        {error.message}
+                    </FieldError>
+                </Suspense>
+            }
+        </FormControl>
     );
 }
 
