@@ -25,7 +25,6 @@ export default function Nav() {
                         <MenuIcon />
                     </IconButton>
 
-                    {/* Logo or Title */}
                     <Typography variant="h6" sx={{ flexGrow: 1 }}>
                         AmtFlight
                     </Typography>
@@ -43,7 +42,6 @@ export default function Nav() {
                 </Toolbar>
             </AppBar>
 
-            {/* Drawer (Sidebar) for Small Screens */}
             <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
                 <List sx={{
                     width: 250,

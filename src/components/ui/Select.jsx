@@ -13,11 +13,9 @@ export default function Select({
 }) {
     return (
         <FormControl error={error} sx={{ m: 1, minWidth: 120, maxWidth: 150, flexGrow: 1, marginLeft: 0 }} size={size}>
-            <InputLabel id="demo-simple-select-label">{label}</InputLabel>
+            <InputLabel>{label}</InputLabel>
             <MuiSelect
                 autoWidth
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
                 value={value}
                 label={label}
                 onChange={onChange}

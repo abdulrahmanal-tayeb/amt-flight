@@ -4,7 +4,7 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { Box, Button, Container, IconButton, Stack } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { FlightTakeoff } from '@mui/icons-material';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Paginated } from '../utils/utils';
@@ -30,8 +30,8 @@ export function SearchOptions({
         defaultValues: query ?? {
             trip: "roundTrip",
             cabinClass: "economy",
-            startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-            endDate: new Date(Date.now() + 7 * 2 * 24 * 60 * 60 * 1000),
+            startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+            endDate: new Date(Date.now() + 7 * 2 * 24 * 60 * 60 * 1000), // Two weeks from now
             adults: 0
         }
     });
@@ -103,7 +103,7 @@ export function SearchResult({
     data,
     onClick,
 }) {
-    
+
     // Here we simulate the cabinClass and trip from the made query because there
     // Rapid API doesn't support them
     const { query } = useFlightQuery();
@@ -171,6 +171,7 @@ export function FlightSearchResults({
 }) {
     const { setFlight } = useChoosenFlight();
     const { itineraries } = results;
+
     const handleClick = useCallback((itenirary) => {
         if (itenirary) {
             setFlight(itenirary);
@@ -187,6 +188,7 @@ export function FlightSearchResults({
             }
         }
     }, [setFlight, itineraries]);
+
 
     return (itineraries?.length > 0) ? (
         <>
@@ -228,6 +230,13 @@ export function DetailedFlight({
     const { setFlight, flight } = useChoosenFlight();
     const { data, isLoading, error } = useFlightDetails({ sessionId });
 
+    const leg = useMemo(() => {
+        if (data) {
+            return data?.data.itinerary.legs[0];
+        }
+    }, [data]);
+
+
     if (isLoading) {
         return (
             <FlightSkeleton />
@@ -235,57 +244,57 @@ export function DetailedFlight({
     } else if (error || !data?.data.itinerary) {
         return (
             <div>
-                <h1>Ooops! Something went wrong</h1>
+                <h1>Ooops!</h1>
+                <p> Something we couldn't fetch the server at this moment. Please try again later.</p>
             </div>
         );
-    }
+    } else {
+        return (
+            <>
+                <Helmet>
+                    <title>Flight Details</title>
+                </Helmet>
 
-    const leg = data?.data.itinerary.legs[0];
-    return (
-        <>
-            <Helmet>
-                <title>Flight Details</title>
-            </Helmet>
-
-            <div
-                style={{
-                    backgroundColor: "var(--amt-secondary)",
-                    borderRadius: "1em"
-                }}
-                className='result-container'
-            >
-                <Stack direction="column">
-                    <Stack
-                        sx={{ padding: "0em 1em 0em 1em", borderBottom: "1px solid var(--amt-secondary)" }}
-                        direction="row"
-                        spacing={5}
-                        justifyContent={"space-between"}
-                        alignItems={"center"}
-                    >
-                        <Stack direction="row" spacing={2}>
-                            <FlightTakeoff />
-                            <p>Departing Flight - {formatShortDate(leg.departure)}</p>
+                <div
+                    style={{
+                        backgroundColor: "var(--amt-secondary)",
+                        borderRadius: "1em"
+                    }}
+                    className='result-container'
+                >
+                    <Stack direction="column">
+                        <Stack
+                            sx={{ padding: "0em 1em 0em 1em", borderBottom: "1px solid var(--amt-secondary)" }}
+                            direction="row"
+                            spacing={5}
+                            justifyContent={"space-between"}
+                            alignItems={"center"}
+                        >
+                            <Stack direction="row" spacing={2}>
+                                <FlightTakeoff />
+                                <p>Departing Flight - {formatShortDate(leg.departure)}</p>
+                            </Stack>
+                            <IconButton onClick={() => setFlight(null)}>
+                                <CloseIcon />
+                            </IconButton>
                         </Stack>
-                        <IconButton onClick={() => setFlight(null)}>
-                            <CloseIcon />
-                        </IconButton>
+                        <SearchResult
+                            data={flight}
+                            style={{
+                                borderRadius: 0,
+                                backgroundColor: "transparent"
+                            }}
+                        />
+                        <FlightDetailsAccordion
+                            leg={leg}
+                            carrierSafetyAttrs={data.data.itinerary.operatingCarrierSafetyAttributes[0]}
+                        />
                     </Stack>
-                    <SearchResult
-                        data={flight}
-                        style={{
-                            borderRadius: 0,
-                            backgroundColor: "transparent"
-                        }}
-                    />
-                    <FlightDetailsAccordion
-                        leg={leg}
-                        carrierSafetyAttrs={data.data.itinerary.operatingCarrierSafetyAttributes[0]}
-                    />
-                </Stack>
-            </div>
-            <ReturningFlights />
-        </>
-    )
+                </div>
+                <ReturningFlights />
+            </>
+        );
+    }
 }
 
 

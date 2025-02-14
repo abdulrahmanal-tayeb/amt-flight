@@ -3,16 +3,17 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { debounce } from 'lodash-es';
-import axios from 'axios';
-import { RAPID_API_HEADERS } from '../helpers/constants';
 import { FormControl } from '@mui/material';
 import { useAirport } from '../api/flights';
 
 const FieldError = lazy(() => import("./FieldError"))
 
 
+/**
+ * Autocompletes and fetches airport details that matches the user's input
+ */
 export default function AirportSelect({
-    initialOptions = [],
+    initialOptions = [], // In case there were predefined options to choose from.
     label,
     value,
     onSelect,
@@ -29,7 +30,7 @@ export default function AirportSelect({
             setTerm(term);
         }
             , 300)
-        , []);
+    , []);
 
     useEffect(() => {
         if (data?.data) {
@@ -72,12 +73,6 @@ export default function AirportSelect({
                     <TextField
                         {...params}
                         label={label}
-                        slotProps={{
-                            htmlInput: {
-                                ...params.inputProps,
-                                autoComplete: 'new-password', // disable autocomplete and autofill
-                            },
-                        }}
                     />
                 )}
             />
@@ -93,6 +88,9 @@ export default function AirportSelect({
 }
 
 
+/**
+ * Returns the option's label that should be shown in the dropdown.
+ */
 function getOptionLabel(option) {
     if (!option) return "";
     const { presentation } = option;

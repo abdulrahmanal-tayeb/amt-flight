@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { Pagination } from "@mui/material";
 
+
 export function Layout({ children, style = {} }) {
     return (
         <div
@@ -17,6 +18,9 @@ export function Layout({ children, style = {} }) {
 }
 
 
+/**
+ * Paginates any list of items. Use the `render` method to "Plug In" your component.
+ */
 export function Paginated({
     itemsPerPage,
     items,

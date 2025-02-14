@@ -22,6 +22,7 @@ export default function Flights() {
                     animate={{
                         backgroundColor: "#1271858f"
                     }}
+
                     transition={{
                         duration: 1
                     }}
@@ -71,6 +72,8 @@ export default function Flights() {
                         delay: 1
                     }}
                 >
+                    
+                    {/* Those were hardcoded because I couldn't find an API endpoint that could satisfy this functionality */}
                     <Container
                         className="col-12"
                         style={{ marginTop: "5em" }}

@@ -4,6 +4,9 @@ import { getAirportDetails, getFlightDetails, getFlights } from "./utils";
 import { formatLegs } from "../helpers/helpers";
 
 
+/**
+ * Returns the details of a given flight id
+ */
 export function useFlightDetails({
     sessionId
 }) {
@@ -21,6 +24,10 @@ export function useFlightDetails({
 }
 
 
+/**
+ * Returns the flights returning to where the user was departuring from the `endDate`
+ * specified by the user in the `SearchOptions`
+ */
 export function useReturningFlights() {
     const { query } = useFlightQuery();
     const { flight } = useChoosenFlight();
@@ -34,6 +41,9 @@ export function useReturningFlights() {
 }
 
 
+/**
+ * Searches for flights matching the specified options obtained from `SearchOptions`.
+ */
 export function useFlights() {
     const { query } = useFlightQuery();
     const { data, isLoading, error } = useQuery({
@@ -47,6 +57,10 @@ export function useFlights() {
 }
 
 
+
+/**
+ * Searches and returns **Airport** data given a search term.
+ */
 export function useAirport({ label, term }) {
     const { data, isLoading, error } = useQuery({
         queryKey: [`autocomplete-${label}`, term],
