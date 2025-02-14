@@ -14,6 +14,8 @@ import { getFlightDetails, getItinerary } from '../helpers/flights';
 import { AirportOptions, DateOptions, FlightDetailsAccordion, ReturningFlights, TripOptions } from './subfragments/flights';
 import { useChoosenFlight, useFlightQuery } from '../helpers/stores';
 import { FlightSkeleton } from '../loading/flights';
+import Slide from '../ui/animated/Slide';
+import { Helmet } from 'react-helmet-async';
 
 export function SearchOptions({
     style = {},
@@ -196,11 +198,17 @@ export function FlightSearchResults({
                     itemsPerPage={5}
                     items={itineraries}
                     render={(result, i) => (
-                        <SearchResult
-                            key={i}
-                            onClick={handleClick}
-                            data={result}
-                        />
+                        <Slide
+                            transition={{
+                                delay: i * 0.3
+                            }}
+                        >
+                            <SearchResult
+                                key={i}
+                                onClick={handleClick}
+                                data={result}
+                            />
+                        </Slide>
                     )}
                 />
             </Stack>
@@ -244,6 +252,10 @@ export function DetailedFlight({
     const leg = data?.data.itinerary.legs[0];
     return (
         <>
+            <Helmet>
+                <title>Flight Details</title>
+            </Helmet>
+            
             <div
                 style={{
                     backgroundColor: "var(--amt-secondary)",

@@ -11,6 +11,7 @@ export default function Flights() {
         <>
             <Helmet>
                 <title>Flights - Find Cheap Flight Options</title>
+                <meta name="description" content="Search for cheap flights from where ever you are to any part of the world!" />
             </Helmet>
             <Layout>
                 <motion.div

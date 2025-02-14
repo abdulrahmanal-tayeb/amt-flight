@@ -39,7 +39,12 @@ export default function SearchFlights() {
     return (
         <>
             <Helmet>
-                <title>Search for flights</title>
+                {query ?
+                    <title>Flights from {query.origin.presentation.title} to {query.destination.presentation.title}</title>
+                    :
+                    <title>Search Results</title>
+                }
+                <meta name="description" content="Simple and clean Google Flights clone by Abdulrahman Al-Tayeb" />
             </Helmet>
             <Layout style={{ marginTop: "2em" }}>
                 <SearchOptions />
