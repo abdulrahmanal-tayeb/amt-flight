@@ -12,6 +12,7 @@ export default function Card({
 
         }}>
             <img
+                alt={name}
                 src={imgSrc}
                 style={{
                     backgroundColor: "black",

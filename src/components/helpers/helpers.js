@@ -7,7 +7,7 @@ export function formatTime(date) {
     if (typeof (date) === "string") {
         preparedDate = new Date(preparedDate);
     }
-    return dayjs(date).format("h:mm A"); // Example output: "3:45 PM"
+    return dayjs(preparedDate).format("h:mm A"); // Example output: "3:45 PM"
 }
 
 export function formatShortDate(date) {

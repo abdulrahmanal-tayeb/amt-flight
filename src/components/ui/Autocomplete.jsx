@@ -59,7 +59,7 @@ export default function AirportSelect({
             }}
             options={options ?? []}
             autoHighlight
-            value={value}
+            value={value ?? null}
             loading={isLoading}
             loadingText={"Fetching Airports..."}
             onChange={(e, value) => (onSelect && onSelect(value))}
@@ -68,7 +68,6 @@ export default function AirportSelect({
             renderOption={(props, option) => {
                 if (!option) return;
                 const { key, ...optionProps } = props;
-                console.log("OPTION: ", option);
                 return (
                     <Box
                         key={key}

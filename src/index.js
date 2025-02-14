@@ -4,16 +4,19 @@ import App from './App';
 import reportWebVitals from './others/reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { HelmetProvider } from 'react-helmet-async';
 
 const client = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <QueryClientProvider client={client}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </QueryClientProvider>
+    <BrowserRouter>
+      <QueryClientProvider client={client}>
+        <HelmetProvider>
+          <App />
+        </HelmetProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

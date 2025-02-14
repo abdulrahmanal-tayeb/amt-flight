@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet";
 import { DetailedFlight, FlightSearchResults, SearchOptions } from "../fragments/flights";
 import { Layout } from "../utils/utils";
 import { Container } from "@mui/material";
@@ -8,6 +7,7 @@ import { useQuery } from "react-query";
 import { getFlights } from "../helpers/flights";
 import { SearchFlightsSkeleton } from "../loading/flights";
 import { useChoosenFlight, useFlightQuery } from "../helpers/stores";
+import { Helmet } from "react-helmet-async";
 
 
 export default function SearchFlights() {

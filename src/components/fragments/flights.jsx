@@ -1,7 +1,7 @@
 import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, IconButton, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Button, Container, IconButton, Skeleton, Stack } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { FlightTakeoff } from '@mui/icons-material';
 import { useCallback, useEffect } from 'react';
@@ -10,11 +10,8 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Paginated } from '../utils/utils';
 import { toSentence, formatDuration, formatLegs, formatShortDate, formatTime, objectToSearchParams } from '../helpers/helpers';
-import { getFlightDetails, getFlights, getItinerary } from '../helpers/flights';
+import { getFlightDetails, getItinerary } from '../helpers/flights';
 import { AirportOptions, DateOptions, FlightDetailsAccordion, ReturningFlights, TripOptions } from './subfragments/flights';
-import { SearchFlightsSkeleton } from '../loading/flights';
-import { motion } from "framer-motion";
-import Slide from '../ui/animated/Slide';
 import { useChoosenFlight, useFlightQuery } from '../helpers/stores';
 
 export function SearchOptions({
@@ -36,12 +33,12 @@ export function SearchOptions({
     });
 
     const navigate = useNavigate();
+    
     const handleSearch = useCallback((values) => {
         setQuery(values);
         setFlight(null); // Reset choosen flight;
         navigate(`/flights/search/?${objectToSearchParams(values)}`);
-    }, []);
-
+    }, [navigate, setFlight, setQuery]);
 
     return (
         <Container>
@@ -110,7 +107,6 @@ export function SearchResult({
             formatted: flightFormattedPrice
         },
         legs,
-        tags
     } = data;
 
     const leg = legs[0];
@@ -174,7 +170,7 @@ export function FlightSearchResults({
         if (itenirary) {
             setFlight(itenirary);
         }
-    }, []);
+    }, [setFlight]);
 
     useEffect(() => {
         // if the id is passed through a GET parameter, auto get and assign that flight (incase of a sharable link functionality).
@@ -185,7 +181,7 @@ export function FlightSearchResults({
                 setFlight(itenirary);
             }
         }
-    }, []);
+    }, [setFlight, itineraries]);
 
     return (itineraries?.length > 0) ? (
         <>

@@ -1,10 +1,10 @@
-import { Helmet } from "react-helmet";
 import { SearchOptions } from "../fragments/flights";
-import { Box, Button, Chip, Container, Grid2, Stack } from "@mui/material";
+import { Container, Stack } from "@mui/material";
 import Card from "../ui/Card";
 import { Layout } from "../utils/utils";
 import { motion } from "framer-motion";
 import Slide from "../ui/animated/Slide";
+import { Helmet } from "react-helmet-async";
 
 export default function Flights() {
     return (
@@ -107,6 +107,7 @@ export default function Flights() {
                                 },
                             ].map((cardDetails, i) => (
                                 <Slide
+                                    key={i}
                                     style={{ flexGrow: 1 }}
                                     transition={{
                                         duration: 0.2,

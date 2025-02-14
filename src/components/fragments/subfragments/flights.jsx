@@ -55,12 +55,9 @@ export function TripOptions({ control }) {
                     {
                         name: "adults",
                         render: ({ field, fieldState }) => (
-                            <>
-                                <OptionsMenu
-                                    {...field}
-                                    onChange={(adults) => field.onChange(adults)}
-                                />
-                            </>
+                            <OptionsMenu
+                                onChange={(adults) => field.onChange(adults)}
+                            />
                         )
                     },
                     {
@@ -76,15 +73,13 @@ export function TripOptions({ control }) {
                         name={selectProps.name}
                         control={control}
                         render={selectProps.render ?? (({ field, fieldState }) => (
-                            <>
-                                <Select
-                                    {...field}
-                                    value={field.value}
-                                    error={fieldState.error}
-                                    {...selectProps}
-                                    onChange={(value) => field.onChange(value)}
-                                />
-                            </>
+                            <Select
+                                key={i}
+                                value={field.value}
+                                error={fieldState.error}
+                                {...selectProps}
+                                onChange={(value) => field.onChange(value)}
+                            />
                         ))}
                     />
                 ))}
@@ -178,14 +173,11 @@ export function DateOptions({ control }) {
                         name={dateProps.name}
                         control={control}
                         render={({ field }) => (
-                            <>
-                                <DatePicker
-                                    {...field}
-                                    {...dateProps}
-                                    value={field.value}
-                                    onChange={(value) => field.onChange(value.toDate())}
-                                />
-                            </>
+                            <DatePicker
+                                {...dateProps}
+                                value={field.value}
+                                onChange={(value) => field.onChange(value.toDate())}
+                            />
                         )}
                     />
                 ))}
@@ -284,6 +276,7 @@ export function FlightDetailsAccordion({
                             <a
                                 href={`https://www.google.com/search?q=${leg.segments[0].operatingCarrier.name}`}
                                 target="_blank"
+                                rel="noreferrer"
                             >
                                 {leg.segments[0].operatingCarrier.name}
                             </a>

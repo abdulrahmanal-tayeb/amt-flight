@@ -30,7 +30,7 @@ export function Paginated({
     const handlePageClick = useCallback((page) => {
         const newOffset = (page * itemsPerPage) % items.length;
         setItemOffset(newOffset);
-    }, [items]);
+    }, [items, itemsPerPage]);
 
     const renderedItems = useMemo(() => (
         currentItems? currentItems.map(render) : null

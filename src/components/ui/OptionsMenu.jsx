@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Menu, MenuItem, Button, IconButton, Typography, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -19,7 +19,7 @@ export default function OptionsMenu({
             onChange && onChange(newValue);
             return newValue;
         })
-    }, []);
+    }, [onChange]);
 
     return (
         <div>

@@ -19,8 +19,8 @@ export default function Select({
                 label={label}
                 onChange={onChange}
             >
-                {options?.length > 0 && options.map((option, index) => (
-                    <MenuItem {...option}>{option.label}</MenuItem>
+                {options?.length > 0 && options.map((option, i) => (
+                    <MenuItem key={i} {...option}>{option.label}</MenuItem>
                 ))}
             </MuiSelect>
         </FormControl>

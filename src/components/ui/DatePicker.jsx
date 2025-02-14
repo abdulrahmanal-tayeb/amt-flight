@@ -16,13 +16,6 @@ export default function DatePicker({
                 label={label}
                 views={['month', 'day']}
                 onChange={onChange}
-                slotProps={{
-                    textField: {
-                        sx: {
-                            marginLeft: 0
-                        }
-                    }
-                }}
             />
         </LocalizationProvider>
     );
