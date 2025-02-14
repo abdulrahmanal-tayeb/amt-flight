@@ -2,12 +2,10 @@ import { Helmet } from "react-helmet-async";
 import { FlightSearchResults, SearchOptions } from "../fragments/flights";
 import { Layout } from "../utils/utils";
 import { Container } from "@mui/material";
-import { useSearchParams } from "react-router-dom";
 import { lazy, Suspense, useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import { getFlights } from "../helpers/flights";
 import { FlightSkeleton, SearchFlightsSkeleton } from "../loading/flights";
 import { useChoosenFlight, useFlightQuery } from "../helpers/stores";
+import { useFlights } from "../api/flights";
 
 const DetailedFlight = lazy(() =>
     import("../fragments/flights").then(m => ({ default: m.DetailedFlight }))
@@ -16,16 +14,7 @@ const DetailedFlight = lazy(() =>
 export default function SearchFlights() {
     const { query } = useFlightQuery();
     const { flight } = useChoosenFlight();
-
-    const [searchParams] = useSearchParams();
-
-
-    const { data, isLoading } = useQuery({
-        queryKey: [`searchFlight-${searchParams.toString()}`],
-        queryFn: () => getFlights(query),
-        enabled: !!query,
-        refetchOnWindowFocus: false
-    });
+    const { data, isLoading } = useFlights();
 
     const [searchResults, setSearchResults] = useState([]);
 

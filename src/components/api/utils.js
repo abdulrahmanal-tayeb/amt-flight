@@ -1,5 +1,5 @@
 import axios from "axios";
-import { RAPID_API_HEADERS } from "./constants";
+import { RAPID_API_HEADERS } from "../helpers/constants";
 
 export async function getFlights(data, returning = false) {
     if (!data) return;
@@ -13,7 +13,7 @@ export async function getFlights(data, returning = false) {
     } = data;
 
     const url = new URL("https://sky-scrapper.p.rapidapi.com/api/v1/flights/searchFlights");
-    const [originAirport, destinationAirport, date] = returning? [destination, origin, endDate] : [origin, destination, startDate];
+    const [originAirport, destinationAirport, date] = returning ? [destination, origin, endDate] : [origin, destination, startDate];
     const preparedData = {
         originSkyId: originAirport.skyId,
         destinationSkyId: destinationAirport.skyId,
@@ -60,3 +60,14 @@ export async function getFlightDetails(data) {
     return response.data
 }
 
+
+
+export async function getAirportDetails(term) {
+    const response = await axios.get(
+        `https://sky-scrapper.p.rapidapi.com/api/v1/flights/searchAirport?query=${term}`,
+        {
+            headers: RAPID_API_HEADERS
+        }
+    );
+    return response.data;
+}

@@ -3,22 +3,13 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { debounce } from 'lodash-es';
-import { useQuery } from 'react-query';
 import axios from 'axios';
 import { RAPID_API_HEADERS } from '../helpers/constants';
 import { FormControl } from '@mui/material';
+import { useAirport } from '../api/flights';
 
 const FieldError = lazy(() => import("./FieldError"))
 
-async function getAirportDetails(term) {
-    const response = await axios.get(
-        `https://sky-scrapper.p.rapidapi.com/api/v1/flights/searchAirport?query=${term}`,
-        {
-            headers: RAPID_API_HEADERS
-        }
-    );
-    return response.data;
-}
 
 export default function AirportSelect({
     initialOptions = [],
@@ -29,12 +20,7 @@ export default function AirportSelect({
 }) {
     const [options, setOptions] = useState(initialOptions);
     const [term, setTerm] = useState("");
-    const { data, isLoading } = useQuery({
-        queryKey: [`autocomplete-${label}`, term],
-        queryFn: () => getAirportDetails(term),
-        enabled: !!term
-    });
-
+    const { data, isLoading } = useAirport({ term, label });
 
     const handleSearch = useCallback(
         debounce(async (term) => {

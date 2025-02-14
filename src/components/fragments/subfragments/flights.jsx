@@ -6,15 +6,13 @@ import AirportSelect from "../../ui/Autocomplete";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import DatePicker from "../../ui/DatePicker";
 import { useMemo } from "react";
-import { getFlights } from "../../helpers/flights";
-import { useQuery } from "react-query";
-import { useChoosenFlight, useFlightQuery } from "../../helpers/stores";
 import { SearchResult } from "../flights";
 import { SearchFlightsSkeleton } from "../../loading/flights";
 import { Paginated } from "../../utils/utils";
 import { formatDuration, formatTime, toSentence } from "../../helpers/helpers";
 import CircleIcon from '@mui/icons-material/Circle';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useReturningFlights } from "../../api/flights";
 
 
 export function TripOptions({ control }) {
@@ -209,12 +207,7 @@ export function DateOptions({ control }) {
 
 
 export function ReturningFlights() {
-    const { query } = useFlightQuery();
-    const { flight } = useChoosenFlight();
-    const { data: returningFlights, isLoading: isLoadingReturningFlights } = useQuery({
-        queryKey: [`${flight.id}-returning`],
-        queryFn: () => getFlights(query, true),
-    });
+    const { data: returningFlights, isLoading: isLoadingReturningFlights } =  useReturningFlights();
 
     return isLoadingReturningFlights ?
         <div className='mt-5 result-container'>

@@ -1,21 +1,22 @@
 import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import { Box, Button, Container, IconButton, Skeleton, Stack } from "@mui/material";
+import { Box, Button, Container, IconButton, Stack } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { FlightTakeoff } from '@mui/icons-material';
 import { useCallback, useEffect } from 'react';
-import { useQuery } from 'react-query';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Paginated } from '../utils/utils';
-import { toSentence, formatDuration, formatLegs, formatShortDate, formatTime, objectToSearchParams } from '../helpers/helpers';
-import { getFlightDetails, getItinerary } from '../helpers/flights';
+import { toSentence, formatDuration, formatShortDate, formatTime, objectToSearchParams } from '../helpers/helpers';
 import { AirportOptions, DateOptions, FlightDetailsAccordion, ReturningFlights, TripOptions } from './subfragments/flights';
 import { useChoosenFlight, useFlightQuery } from '../helpers/stores';
 import { FlightSkeleton } from '../loading/flights';
 import Slide from '../ui/animated/Slide';
 import { Helmet } from 'react-helmet-async';
+import { useFlightDetails } from '../api/flights';
+import { getItinerary } from '../api/utils';
+
 
 export function SearchOptions({
     style = {},
@@ -102,9 +103,7 @@ export function SearchResult({
     data,
     onClick,
 }) {
-
-    const { flight } = useFlightQuery();
-
+    
     // Here we simulate the cabinClass and trip from the made query because there
     // Rapid API doesn't support them
     const { query } = useFlightQuery();
@@ -222,20 +221,12 @@ export function FlightSearchResults({
 }
 
 
-
 export function DetailedFlight({
     sessionId,
 }) {
 
     const { setFlight, flight } = useChoosenFlight();
-    const { data, isLoading, error } = useQuery({
-        queryKey: [`${flight.id}-${sessionId}`],
-        queryFn: () => getFlightDetails({
-            sessionId,
-            itineraryId: flight.id,
-            legs: JSON.stringify(formatLegs(flight.legs))
-        }),
-    });
+    const { data, isLoading, error } = useFlightDetails({ sessionId });
 
     if (isLoading) {
         return (
