@@ -45,7 +45,7 @@ Create a `.env` file in the root directory and add:
 ---
 
 ## 📸 Demo & Screenshots  
-Check out the **Loom video demo** here: (Will be available when I record the video)
+Check out the **[Loom video](https://www.loom.com/share/82123a2e0e7b4817b0431d216ffed0bf?sid=9f5b68ba-edc8-4534-8b8f-aa460761d73a) demo** here: 
 
 ---
 
