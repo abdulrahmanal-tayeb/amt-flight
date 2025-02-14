@@ -9,7 +9,8 @@ export default function Select({
     onChange,
     options,
     error,
-    size = "small"
+    size = "small",
+    icon
 }) {
     return (
         <FormControl error={error} sx={{ m: 1, minWidth: 120, maxWidth: 150, flexGrow: 1, marginLeft: 0 }} size={size}>
@@ -18,6 +19,7 @@ export default function Select({
                 autoWidth
                 value={value}
                 label={label}
+                startAdornment={icon}
                 onChange={onChange}
             >
                 {(options?.length > 0) && options.map((option, i) => (

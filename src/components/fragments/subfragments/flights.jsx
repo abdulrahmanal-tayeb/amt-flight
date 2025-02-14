@@ -207,7 +207,7 @@ export function DateOptions({ control }) {
 
 
 export function ReturningFlights() {
-    const { data: returningFlights, isLoading: isLoadingReturningFlights } =  useReturningFlights();
+    const { data: returningFlights, isLoading: isLoadingReturningFlights } = useReturningFlights();
 
     return isLoadingReturningFlights ?
         <div className='mt-5 result-container'>
@@ -223,6 +223,10 @@ export function ReturningFlights() {
                         <Paginated
                             itemsPerPage={5}
                             items={returningFlights.data.itineraries}
+                            sortOptions={[
+                                { label: "Price Ascendently", value: "price" },
+                                { label: "Price Descendantly", value: ".price" },
+                            ]}
                             render={(result, i) => (
                                 <SearchResult
                                     key={i}

@@ -198,6 +198,10 @@ export function FlightSearchResults({
                 <Paginated
                     itemsPerPage={5}
                     items={itineraries}
+                    sortOptions={[
+                        { label: "Price Ascendently", value: "price" },
+                        { label: "Price Descendantly", value: ".price" },
+                    ]}
                     render={(result, i) => (
                         <Slide
                             transition={{
