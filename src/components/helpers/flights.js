@@ -50,7 +50,6 @@ export async function getFlightDetails(data) {
         value && url.searchParams.set(key, value)
     ));
 
-    console.log("URL: ", url);
     const response = await axios.get(
         url,
         {

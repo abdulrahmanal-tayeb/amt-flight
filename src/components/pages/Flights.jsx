@@ -12,7 +12,6 @@ export default function Flights() {
             <Helmet>
                 <title>Flights - Find Cheap Flight Options</title>
             </Helmet>
-
             <Layout>
                 <motion.div
                     initial={{
@@ -77,10 +76,14 @@ export default function Flights() {
                     >
                         <h3>Find cheap flights from whereever you are to anywhere</h3>
 
-                        <Stack sx={{
-                            flexWrap: { xs: "wrap", md: "nowrap" },
-                            gap: 2
-                        }} className="col-12 mt-3" direction={"row"}>
+                        <Stack
+                            sx={{
+                                flexWrap: { xs: "wrap", md: "nowrap" },
+                                gap: 2
+                            }}
+                            className="col-12 mt-3"
+                            direction={"row"}
+                        >
                             {[
                                 {
                                     name: "New York City",
@@ -117,7 +120,6 @@ export default function Flights() {
                                     <Card key={i} {...cardDetails} />
                                 </Slide>
                             ))}
-
                         </Stack>
                     </Container>
                 </Slide>

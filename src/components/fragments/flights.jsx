@@ -13,13 +13,14 @@ import { toSentence, formatDuration, formatLegs, formatShortDate, formatTime, ob
 import { getFlightDetails, getItinerary } from '../helpers/flights';
 import { AirportOptions, DateOptions, FlightDetailsAccordion, ReturningFlights, TripOptions } from './subfragments/flights';
 import { useChoosenFlight, useFlightQuery } from '../helpers/stores';
+import { FlightSkeleton } from '../loading/flights';
 
 export function SearchOptions({
     style = {},
 }) {
 
     const { query, setQuery } = useFlightQuery();
-    const {setFlight} = useChoosenFlight();
+    const { setFlight } = useChoosenFlight();
     const { control, handleSubmit } = useForm({
         // Use the provided stored query
         // fallbacks to the estimation.
@@ -33,7 +34,7 @@ export function SearchOptions({
     });
 
     const navigate = useNavigate();
-    
+
     const handleSearch = useCallback((values) => {
         setQuery(values);
         setFlight(null); // Reset choosen flight;
@@ -102,6 +103,9 @@ export function SearchResult({
 
     const { flight } = useFlightQuery();
 
+    // Here we simulate the cabinClass and trip from the made query because there
+    // Rapid API doesn't support them
+    const { query } = useFlightQuery();
     const {
         price: {
             formatted: flightFormattedPrice
@@ -140,11 +144,11 @@ export function SearchResult({
                 </Stack>
                 <div>
                     <h3>{flightFormattedPrice ?? "$-"}</h3>
-                    <p>{toSentence(flight?.trip)}</p>
+                    <p>{toSentence(query?.trip)}</p>
                 </div>
             </Stack>
             <div>
-                <p className="text-muted">{toSentence(flight?.cabinClass)} Class</p>
+                <p className="text-muted">{toSentence(query?.cabinClass)} Class</p>
             </div>
             <Stack direction={"row"} justifyContent={"space-between"} className="mt-3">
                 <div>
@@ -227,16 +231,8 @@ export function DetailedFlight({
 
     if (isLoading) {
         return (
-            <Skeleton
-                sx={{
-                    width: "100%",
-                    height: "200px",
-                    borderRadius: "1em",
-                    margin: 0, // Ensure no extra spacing
-                    display: "block", // Remove any inline element spacing
-                }}
-            />
-        )
+            <FlightSkeleton />
+        );
     } else if (error || !data?.data.itinerary) {
         return (
             <div>
@@ -282,7 +278,7 @@ export function DetailedFlight({
                 </Stack>
             </div>
 
-            <ReturningFlights/>
+            <ReturningFlights />
         </>
     )
 }
