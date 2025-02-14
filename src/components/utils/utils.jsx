@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Pagination } from "@mui/material";
 
 export function Layout({ children, style = {} }) {
@@ -27,13 +27,18 @@ export function Paginated({
     const currentItems = items.slice(itemOffset, endOffset);
     const pageCount = Math.ceil(items.length / itemsPerPage);
 
-    const handlePageClick = (page) => {
+    const handlePageClick = useCallback((page) => {
         const newOffset = (page * itemsPerPage) % items.length;
         setItemOffset(newOffset);
-    };
+    }, [items]);
+
+    const renderedItems = useMemo(() => (
+        currentItems? currentItems.map(render) : null
+    ), [currentItems, render]);
+
     return (
         <>
-            {currentItems.map(render)}
+            {renderedItems}
             <div className="amt-flex amt-flex-center mb-5">
                 <Pagination
                     count={Math.min(pageCount, 3)} // limit to 3 pages

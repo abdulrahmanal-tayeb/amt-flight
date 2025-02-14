@@ -11,7 +11,7 @@ export function formatTime(date) {
 }
 
 export function formatShortDate(date) {
-    if (!date) return "--:-- AM"
+    if (!date) return ""
     let preparedDate = date;
     if (typeof (date) === "string") {
         preparedDate = new Date(preparedDate);
@@ -33,6 +33,7 @@ export function formatDuration(minutes) {
 
 
 export function formatLegs(legs) {
+    if(!legs) return {};
     return legs.map((leg) => (
         {
             origin: leg.segments[0].origin.parent.flightPlaceId,
@@ -43,6 +44,7 @@ export function formatLegs(legs) {
 }
 
 export function toSentence(text) {
+    if(!text) return "";
     return text
         .replace(/[_-]/g, " ") // Replace underscores and hyphens with spaces
         .replace(/([a-z])([A-Z])/g, "$1 $2") // Add space before capital letters

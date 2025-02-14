@@ -1,39 +1,36 @@
 import { Helmet } from "react-helmet";
-import { DetailedFlight, FlightSearchResults, SearchOptions, SearchResult } from "../fragments/flights";
+import { DetailedFlight, FlightSearchResults, SearchOptions } from "../fragments/flights";
 import { Layout } from "../utils/utils";
-import { Box, Container, Skeleton, Stack } from "@mui/material";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Container } from "@mui/material";
+import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { Key } from "@mui/icons-material";
-import axios from "axios";
-import { RAPID_API_HEADERS } from "../helpers/constants";
 import { getFlights } from "../helpers/flights";
 import { SearchFlightsSkeleton } from "../loading/flights";
+import { useChoosenFlight, useFlightQuery } from "../helpers/stores";
 
 
 export default function SearchFlights() {
-    const location = useLocation();
+    const {query} = useFlightQuery();
+    const {flight} = useChoosenFlight();
+
     const [searchParams] = useSearchParams();
-    const [choosen, setChoosen] = useState(null);
+
 
     const { data, isLoading } = useQuery({
         queryKey: [`searchFlight-${searchParams.toString()}`],
-        queryFn: () => getFlights(location.state),
-        enabled: !!location.state,
+        queryFn: () => getFlights(query),
+        enabled: !!query,
         refetchOnWindowFocus: false
     });
 
     const [searchResults, setSearchResults] = useState([]);
-
 
     useEffect(() => {
         if (data?.data) {
             setSearchResults(data.data);
         }
     }, [data]);
-
-
 
 
     return (
@@ -44,7 +41,6 @@ export default function SearchFlights() {
             <Layout style={{ marginTop: "2em" }}>
                 <SearchOptions
                     search={false}
-                    values={location.state}
                 />
                 <Container
                     sx={{
@@ -56,25 +52,21 @@ export default function SearchFlights() {
                         :
                         (
                             <>
-                                {choosen &&
+                                {flight &&
                                     <div className="mt-5">
                                         <DetailedFlight
                                             sessionId={data?.sessionId}
-                                            onClose={() => setChoosen(null)}
-                                            itineraryData={choosen}
-                                            flightsQuery={location.state} // Used when querying for returing flights.
                                         />
                                     </div>
                                 }
 
                                 <div
                                     style={{
-                                        display: !!choosen ? "none" : "block"
+                                        // This prevents unneccessary mounts/unmounts when rendered conditionally.
+                                        display: !!flight ? "none" : "block"
                                     }}
                                 >
                                     <FlightSearchResults
-                                        flightsQuery={location.state}
-                                        setChoosen={setChoosen}
                                         results={searchResults}
                                     />
                                 </div>

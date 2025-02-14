@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Stack, Typography } from "@mui/material";
 import { Controller } from "react-hook-form";
 import Select from "../../ui/Select";
 import OptionsMenu from "../../ui/OptionsMenu";
@@ -6,6 +6,16 @@ import AirportSelect from "../../ui/Autocomplete";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import DatePicker from "../../ui/DatePicker";
 import { useMemo } from "react";
+import { getFlights } from "../../helpers/flights";
+import { useQuery } from "react-query";
+import { useChoosenFlight, useFlightQuery } from "../../helpers/stores";
+import { SearchResult } from "../flights";
+import { SearchFlightsSkeleton } from "../../loading/flights";
+import { Paginated } from "../../utils/utils";
+import { formatDuration, formatTime, toSentence } from "../../helpers/helpers";
+import CircleIcon from '@mui/icons-material/Circle';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 
 export function TripOptions({ control }) {
     // Rapid API doesn't support this option, so it will be used as is in every result.
@@ -181,5 +191,123 @@ export function DateOptions({ control }) {
                 ))}
             </Stack>
         </>
+    )
+}
+
+
+export function ReturningFlights() {
+    const { query } = useFlightQuery();
+    const { flight } = useChoosenFlight();
+    const { data: returningFlights, isLoading: isLoadingReturningFlights } = useQuery({
+        queryKey: [`${flight.id}-returning`],
+        queryFn: () => getFlights(query, true),
+    });
+
+    return isLoadingReturningFlights ?
+        <div className='mt-5'>
+            <SearchFlightsSkeleton />
+        </div >
+        :
+        <div className="mt-5">
+            <h3>Returning Flights</h3>
+
+            <div className='mt-3'>
+                {returningFlights?.data?.itineraries &&
+                    <Stack direction="column" spacing={2}>
+                        <Paginated
+                            itemsPerPage={5}
+                            items={returningFlights.data.itineraries}
+                            render={(result, i) => (
+                                <SearchResult
+                                    key={i}
+                                    data={result}
+                                    onClick={() => { }}
+                                />
+                            )}
+                        />
+                    </Stack>
+                }
+            </div>
+        </div>
+
+
+}
+
+
+export function FlightDetailsAccordion({
+    leg,
+    carrierSafetyAttrs
+}) {
+    return (
+        <Accordion
+            sx={{
+                boxShadow: "none",
+                border: "none",
+                backgroundColor: "transparent",
+                borderBottomLeftRadius: "1em",
+                borderBottomRightRadius: "1em"
+            }}
+        >
+            <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1bh-content"
+                id="panel1bh-header"
+            >
+                <Typography component="span" sx={{ width: '33%', flexShrink: 0 }}>
+                    Flight Details
+                </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+                <Stack direction="column" spacing={"3%"}>
+                    <Stack direction="row" spacing={3} alignItems="flex-start">
+                        <p><CircleIcon /></p>
+                        <div>
+                            <h3>{formatTime(leg.departure)}</h3>
+                            <p className='mb-0'>{leg.origin.name}</p>
+                            <p className='text-muted'>Travel time: {formatDuration(leg.duration)}</p>
+                        </div>
+                    </Stack>
+                    <Stack direction="row" spacing={3} alignItems="flex-start">
+                        <p><CircleIcon /></p>
+                        <div>
+                            <h3>{formatTime(leg.arrival)}</h3>
+                            <p>{leg.destination.name}</p>
+                        </div>
+                    </Stack>
+                </Stack>
+                <div className='mt-5'>
+                    <h4>Carrier Details</h4>
+                    <hr />
+                    <Stack direction="row" spacing={2} alignItems={"center"}>
+                        <img width={20} height={20} src={leg.segments[0].operatingCarrier.logo} alt={"operating carrier"} />
+                        <p>
+                            <a
+                                href={`https://www.google.com/search?q=${leg.segments[0].operatingCarrier.name}`}
+                                target="_blank"
+                            >
+                                {leg.segments[0].operatingCarrier.name}
+                            </a>
+                        </p>
+                        <p>{leg.segments[0].operatingCarrier.displayCode}</p>
+                    </Stack>
+                    <div className='mt-5'>
+                        <p>Safety Attributes</p>
+                        <hr />
+                        <div className="mt-3">
+                            {Object.entries(carrierSafetyAttrs).map(([key, value], i) => {
+                                if (value === null) {
+                                    value = <span style={{ color: "red" }}>No</span>;
+                                }
+
+                                return <p key={i}>
+                                    <strong>{toSentence(key)}</strong> : <span>{value}</span>
+                                </p>
+                            })}
+                        </div>
+                    </div>
+
+                </div>
+            </AccordionDetails>
+        </Accordion>
     )
 }

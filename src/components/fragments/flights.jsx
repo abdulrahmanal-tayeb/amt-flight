@@ -1,11 +1,9 @@
 import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
-import CircleIcon from '@mui/icons-material/Circle';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, IconButton, Skeleton, Stack, Typography } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { FlightTakeoff } from '@mui/icons-material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useCallback, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { useForm } from 'react-hook-form';
@@ -13,19 +11,22 @@ import { useNavigate } from 'react-router-dom';
 import { Paginated } from '../utils/utils';
 import { toSentence, formatDuration, formatLegs, formatShortDate, formatTime, objectToSearchParams } from '../helpers/helpers';
 import { getFlightDetails, getFlights, getItinerary } from '../helpers/flights';
-import { AirportOptions, DateOptions, TripOptions } from './subfragments/flights';
+import { AirportOptions, DateOptions, FlightDetailsAccordion, ReturningFlights, TripOptions } from './subfragments/flights';
 import { SearchFlightsSkeleton } from '../loading/flights';
 import { motion } from "framer-motion";
 import Slide from '../ui/animated/Slide';
+import { useChoosenFlight, useFlightQuery } from '../helpers/stores';
 
 export function SearchOptions({
-    values,
     style = {},
-    search = true
 }) {
 
+    const { query, setQuery } = useFlightQuery();
+    const {setFlight} = useChoosenFlight();
     const { control, handleSubmit } = useForm({
-        defaultValues: values ?? {
+        // Use the provided stored query
+        // fallbacks to the estimation.
+        defaultValues: query ?? {
             trip: "roundTrip",
             cabinClass: "economy",
             startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -35,12 +36,10 @@ export function SearchOptions({
     });
 
     const navigate = useNavigate();
-
-
     const handleSearch = useCallback((values) => {
-        navigate(`/flights/search/?${objectToSearchParams(values)}`, {
-            state: values
-        });
+        setQuery(values);
+        setFlight(null); // Reset choosen flight;
+        navigate(`/flights/search/?${objectToSearchParams(values)}`);
     }, []);
 
 
@@ -74,7 +73,7 @@ export function SearchOptions({
                     </Stack>
 
                     {/* Search Button */}
-                    {search && <Container
+                    <Container
                         className="mt-3 col-12 amt-flex amt-flex-center"
                     >
                         <Button
@@ -91,7 +90,7 @@ export function SearchOptions({
                         >
                             Search
                         </Button>
-                    </Container>}
+                    </Container>
                 </Box>
             </form>
         </Container>
@@ -102,9 +101,9 @@ export function SearchResult({
     style = {},
     data,
     onClick,
-    cabinClass,
-    trip
 }) {
+
+    const { flight } = useFlightQuery();
 
     const {
         price: {
@@ -114,7 +113,7 @@ export function SearchResult({
         tags
     } = data;
 
-    const firstLeg = legs[0];
+    const leg = legs[0];
 
     return (
         <Box
@@ -132,42 +131,33 @@ export function SearchResult({
             <Stack direction="row" sx={{ justifyContent: "space-between" }}>
                 <Stack direction="row" sx={{ justifyContent: "space-between" }}>
                     <div>
-                        <h3 className="mb-0">{formatTime(firstLeg.departure)} </h3>
-                        <small>{formatShortDate(firstLeg.departure)}</small>
-                        <p style={{ fontSize: "0.7em" }}>{firstLeg.origin.city} ({firstLeg.origin.displayCode})</p>
+                        <h3 className="mb-0">{formatTime(leg.departure)} </h3>
+                        <small>{formatShortDate(leg.departure)}</small>
+                        <p style={{ fontSize: "0.7em" }}>{leg.origin.city} ({leg.origin.displayCode})</p>
                     </div>
                     <h3><ArrowRightAltIcon /></h3>
                     <div>
-                        <h3 className="mb-0"> {formatTime(firstLeg.arrival)}</h3>
-                        <small>{formatShortDate(firstLeg.arrival)}</small>
-                        <p style={{ fontSize: "0.7em" }}>{firstLeg.destination.city} ({firstLeg.destination.displayCode})</p>
+                        <h3 className="mb-0"> {formatTime(leg.arrival)}</h3>
+                        <small>{formatShortDate(leg.arrival)}</small>
+                        <p style={{ fontSize: "0.7em" }}>{leg.destination.city} ({leg.destination.displayCode})</p>
                     </div>
                 </Stack>
                 <div>
-                    <h3>{flightFormattedPrice}</h3>
-                    <p>{toSentence(trip)}</p>
+                    <h3>{flightFormattedPrice ?? "$-"}</h3>
+                    <p>{toSentence(flight?.trip)}</p>
                 </div>
             </Stack>
             <div>
-                <p className="text-muted">{toSentence(cabinClass)} Class</p>
+                <p className="text-muted">{toSentence(flight?.cabinClass)} Class</p>
             </div>
             <Stack direction={"row"} justifyContent={"space-between"} className="mt-3">
                 <div>
-                    {firstLeg.destination.stopCount > 0 && <p className="mb-0">{firstLeg.destination.stopCount ?? "0"} stop in {firstLeg.destination.displayCode} . {formatDuration(firstLeg.durationInMinutes)}</p>}
+                    {leg.destination.stopCount > 0 && <p className="mb-0">{leg.destination.stopCount ?? "0"} stop in {leg.destination.displayCode} . {formatDuration(leg.durationInMinutes)}</p>}
                     <Stack direction="row" spacing={2}>
                         <AirplanemodeActiveIcon />
-                        <p>{firstLeg.carriers.marketing[0].name}</p>
+                        <p>{leg.carriers.marketing[0].name}</p>
                     </Stack>
                 </div>
-                {tags && <Stack direction="row" divider={"|"} spacing={2}>
-                    {
-                        tags.map((tag, i) => (
-                            <div key={i}>
-                                <p className='text-muted'>{toSentence(tag)}</p>
-                            </div>
-                        ))
-                    }
-                </Stack>}
             </Stack>
         </Box>
     )
@@ -177,27 +167,27 @@ export function SearchResult({
 
 export function FlightSearchResults({
     results,
-    setChoosen,
-    flightsQuery
 }) {
+    const { setFlight } = useChoosenFlight();
     const { itineraries } = results;
     const handleClick = useCallback((itenirary) => {
         if (itenirary) {
-            setChoosen(itenirary);
+            setFlight(itenirary);
         }
     }, []);
 
     useEffect(() => {
+        // if the id is passed through a GET parameter, auto get and assign that flight (incase of a sharable link functionality).
         const id = new URLSearchParams(window.location.search).get("c");
         if (id) {
             const itenirary = getItinerary(id, itineraries);
             if (itenirary) {
-                setChoosen(itenirary);
+                setFlight(itenirary);
             }
         }
     }, []);
 
-    return itineraries?.length > 0 ? (
+    return (itineraries?.length > 0) ? (
         <>
             <h3>Top Departing Flights</h3>
             <p>Ranked based on price and convenience</p>
@@ -206,19 +196,11 @@ export function FlightSearchResults({
                     itemsPerPage={5}
                     items={itineraries}
                     render={(result, i) => (
-                        <Slide
-                            transition={{
-                                delay: i * 0.3
-                            }}
-                        >
-                            <SearchResult
-                                onClick={handleClick}
-                                key={i}
-                                data={result}
-                                cabinClass={flightsQuery.cabinClass}
-                                trip={flightsQuery.trip}
-                            />
-                        </Slide>
+                        <SearchResult
+                            key={i}
+                            onClick={handleClick}
+                            data={result}
+                        />
                     )}
                 />
             </Stack>
@@ -234,24 +216,17 @@ export function FlightSearchResults({
 
 
 export function DetailedFlight({
-    itineraryData,
-    onClose,
     sessionId,
-    flightsQuery
 }) {
 
+    const { setFlight, flight } = useChoosenFlight();
     const { data, isLoading, error } = useQuery({
-        queryKey: [`${itineraryData.id}-${sessionId}`],
+        queryKey: [`${flight.id}-${sessionId}`],
         queryFn: () => getFlightDetails({
             sessionId,
-            itineraryId: itineraryData.id,
-            legs: JSON.stringify(formatLegs(itineraryData.legs))
+            itineraryId: flight.id,
+            legs: JSON.stringify(formatLegs(flight.legs))
         }),
-    });
-
-    const { data: returningFlights, isLoading: isLoadingReturningFlights } = useQuery({
-        queryKey: [`${itineraryData.id}-${sessionId}-returning`],
-        queryFn: () => getFlights(flightsQuery, true),
     });
 
     if (isLoading) {
@@ -274,7 +249,7 @@ export function DetailedFlight({
         );
     }
 
-    const firstLeg = data?.data.itinerary.legs[0];
+    const leg = data?.data.itinerary.legs[0];
     return (
         <>
             <div style={{
@@ -291,116 +266,27 @@ export function DetailedFlight({
                     >
                         <Stack direction="row" spacing={2}>
                             <FlightTakeoff />
-                            <p>Departing Flight - {formatShortDate(firstLeg.departure)}</p>
+                            <p>Departing Flight - {formatShortDate(leg.departure)}</p>
                         </Stack>
-                        <IconButton onClick={onClose}>
+                        <IconButton onClick={() => setFlight(null)}>
                             <CloseIcon />
                         </IconButton>
                     </Stack>
                     <SearchResult
-                        data={itineraryData}
-                        cabinClass={flightsQuery.cabinClass}
-                        trip={flightsQuery.trip}
+                        data={flight}
                         style={{
                             borderRadius: 0,
                             backgroundColor: "transparent"
                         }}
                     />
-                    <Accordion
-                        sx={{
-                            boxShadow: "none",
-                            border: "none",
-                            backgroundColor: "transparent",
-                            borderBottomLeftRadius: "1em",
-                            borderBottomRightRadius: "1em"
-                        }}
-                    >
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel1bh-content"
-                            id="panel1bh-header"
-                        >
-                            <Typography component="span" sx={{ width: '33%', flexShrink: 0 }}>
-                                Flight Details
-                            </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Stack direction="column" spacing={"3%"}>
-                                <Stack direction="row" spacing={3} alignItems="flex-start">
-                                    <p><CircleIcon /></p>
-                                    <div>
-                                        <h3>{formatTime(firstLeg.departure)}</h3>
-                                        <p className='mb-0'>{firstLeg.origin.name}</p>
-                                        <p className='text-muted'>Travel time: {formatDuration(firstLeg.duration)}</p>
-                                    </div>
-                                </Stack>
-                                <Stack direction="row" spacing={3} alignItems="flex-start">
-                                    <p><CircleIcon /></p>
-                                    <div>
-                                        <h3>{formatTime(firstLeg.arrival)}</h3>
-                                        <p>{firstLeg.destination.name}</p>
-                                    </div>
-                                </Stack>
-                            </Stack>
-                            <div className='mt-5'>
-                                <h4>Carrier Details</h4>
-                                <hr />
-                                <Stack direction="row" spacing={2} alignItems={"center"}>
-                                    <img width={20} height={20} src={firstLeg.segments[0].operatingCarrier.logo} alt={"operating carrier"} />
-                                    <p>{firstLeg.segments[0].operatingCarrier.name}</p>
-                                    <p>{firstLeg.segments[0].operatingCarrier.displayCode}</p>
-                                </Stack>
-                                <div className='mt-5'>
-                                    <p>Safety Attributes</p>
-                                    <hr />
-                                    <div className="mt-3">
-                                        {Object.entries(data.data.itinerary.operatingCarrierSafetyAttributes[0]).map(([key, value], i) => {
-                                            if (value === null) {
-                                                value = <span style={{ color: "red" }}>No</span>;
-                                            }
-
-                                            return <p key={i}>
-                                                <strong>{toSentence(key)}</strong> : <span>{value}</span>
-                                            </p>
-                                        })}
-                                    </div>
-                                </div>
-
-                            </div>
-                        </AccordionDetails>
-                    </Accordion>
+                    <FlightDetailsAccordion
+                        leg={leg}
+                        carrierSafetyAttrs={data.data.itinerary.operatingCarrierSafetyAttributes[0]}
+                    />
                 </Stack>
             </div>
 
-            {isLoadingReturningFlights ?
-                <div className='mt-5'>
-                    <SearchFlightsSkeleton />
-                </div>
-                :
-                <div className="mt-5">
-                    <h3>Returning Flights</h3>
-
-                    <div className='mt-3'>
-                        {returningFlights?.data?.itineraries &&
-                            <Stack direction="column" spacing={2}>
-                                <Paginated
-                                    itemsPerPage={5}
-                                    items={returningFlights.data.itineraries}
-                                    render={(result, i) => (
-                                        <SearchResult
-                                            trip={flightsQuery.trip}
-                                            key={i}
-                                            data={result}
-                                            cabinClass={flightsQuery.cabinClass}
-                                            onClick={() => { }}
-                                        />
-                                    )}
-                                />
-                            </Stack>
-                        }
-                    </div>
-                </div>
-            }
+            <ReturningFlights/>
         </>
     )
 }
