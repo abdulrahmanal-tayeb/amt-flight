@@ -153,7 +153,7 @@ export function SearchResult({
             <Stack direction={"row"} justifyContent={"space-between"} className="mt-3">
                 <div>
                     {leg.destination.stopCount > 0 && <p className="mb-0">{leg.destination.stopCount ?? "0"} stop in {leg.destination.displayCode} . {formatDuration(leg.durationInMinutes)}</p>}
-                    <Stack direction="row" spacing={2}>
+                    <Stack direction="row" spacing={2} alignItems={"center"}>
                         <AirplanemodeActiveIcon />
                         <p>{leg.carriers.marketing[0].name}</p>
                     </Stack>
@@ -244,10 +244,13 @@ export function DetailedFlight({
     const leg = data?.data.itinerary.legs[0];
     return (
         <>
-            <div style={{
-                backgroundColor: "var(--amt-secondary)",
-                borderRadius: "1em"
-            }} className='result-container'>
+            <div
+                style={{
+                    backgroundColor: "var(--amt-secondary)",
+                    borderRadius: "1em"
+                }}
+                className='result-container'
+            >
                 <Stack direction="column">
                     <Stack
                         sx={{ padding: "0em 1em 0em 1em", borderBottom: "1px solid var(--amt-secondary)" }}
@@ -277,7 +280,6 @@ export function DetailedFlight({
                     />
                 </Stack>
             </div>
-
             <ReturningFlights />
         </>
     )

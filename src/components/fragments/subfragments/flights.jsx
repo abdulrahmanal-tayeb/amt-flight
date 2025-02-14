@@ -196,11 +196,11 @@ export function ReturningFlights() {
     });
 
     return isLoadingReturningFlights ?
-        <div className='mt-5'>
+        <div className='mt-5 result-container'>
             <SearchFlightsSkeleton />
         </div >
         :
-        <div className="mt-5">
+        <div className="mt-5 result-container">
             <h3>Returning Flights</h3>
 
             <div className='mt-3'>
